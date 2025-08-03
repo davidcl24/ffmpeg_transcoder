@@ -12,6 +12,7 @@
   "type": "module",
   "dependencies": {
     "bullmq": "^5.56.9",
+    "child_process": "^1.0.2",
     "typescript": "^5.9.2"
   },
   "devDependencies": {
