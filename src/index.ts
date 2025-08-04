@@ -1,7 +1,11 @@
 import { Worker, Job } from "bullmq";
 import { exec,  ExecException } from 'child_process';
+import { error } from "console";
 import fs from 'fs';
 import path from 'path';
+import { promisify } from "util";
+
+const execAsync = promisify(exec);
 
 const worker = new Worker(
     'ffmpeg-conversion',
@@ -21,15 +25,12 @@ const worker = new Worker(
         -map [v3out] -map 0:a -c:v:2 libx264 -b:v:2 2500k -c:a aac -b:a 128k -hls_time 10 -hls_playlist_type vod -hls_segment_filename ${outputFolder}/720p_%03d.ts ${outputFolder}/720p.m3u8
         `;
         
-        exec(cmd, (error: ExecException | null, stdout: string, stderr: string) => {
-            if (error) {
-                console.error(`Error: ${error.message}`);
-                return;
-            }
-            if (stderr) {
-                console.log(`stderr: ${stderr}`);
-            }
-        });
+        const { stdout, stderr } = await execAsync(cmd);
+
+        if (stdout)
+            console.log(`${stdout}`);
+        if (stderr)
+            console.log(`${stderr}`);
 
         const masterPlaylist = `#EXTM3U
         #EXT-X-VERSION:3
@@ -44,3 +45,11 @@ const worker = new Worker(
         fs.writeFileSync(path.join(outputFolder, 'master.m3u8'), masterPlaylist, 'utf8');
     }
 );
+
+worker.on('completed', (job: Job) => {
+    console.log(`Job ${job.id} completed`)
+});
+
+worker.on('failed', (job: Job | undefined, error: Error, prev: string) => {
+    console.log(`Job failed: ${error}`)
+});
