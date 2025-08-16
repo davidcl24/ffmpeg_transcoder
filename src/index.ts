@@ -43,6 +43,12 @@ const worker = new Worker(
         `;
 
         fs.writeFileSync(path.join(outputFolder, 'master.m3u8'), masterPlaylist, 'utf8');
+    },
+    {
+        connection: {
+            host: process.env.REDIS_HOST || 'localhost',
+            port: parseInt(String(process.env.REDIS_PORT)) || 6379,
+        },
     }
 );
 
