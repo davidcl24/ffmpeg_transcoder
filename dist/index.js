@@ -25,14 +25,14 @@ const worker = new Worker('video-queue', async (job) => {
     if (stderr)
         console.log(`${stderr}`);
     const masterPlaylist = `#EXTM3U
-        #EXT-X-VERSION:3
-        #EXT-X-STREAM-INF:BANDWIDTH=500000,RESOLUTION=426x240
-        240p.m3u8
-        #EXT-X-STREAM-INF:BANDWIDTH=1200000,RESOLUTION=854x480
-        480p.m3u8
-        #EXT-X-STREAM-INF:BANDWIDTH=2800000,RESOLUTION=1280x720
-        720p.m3u8
-        `;
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=500000,RESOLUTION=426x240
+240p.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=1200000,RESOLUTION=854x480
+480p.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=2800000,RESOLUTION=1280x720
+720p.m3u8
+`;
     fs.writeFileSync(path.join(outputFolder, 'master.m3u8'), masterPlaylist, 'utf8');
 }, {
     connection: {
