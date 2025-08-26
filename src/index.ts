@@ -8,9 +8,11 @@ import { promisify } from "util";
 const execAsync = promisify(exec);
 
 const worker = new Worker(
-    'ffmpeg-conversion',
+    'video-queue',
     async (job: Job) => {
         const { inputPath, outputFolder, resolutions, fileKey  } = job.data;
+
+        await fs.promises.mkdir(outputFolder, { recursive: true });
 
         const cmd = `
         ffmpeg -i ${inputPath} \

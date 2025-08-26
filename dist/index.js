@@ -4,8 +4,9 @@ import fs from 'fs';
 import path from 'path';
 import { promisify } from "util";
 const execAsync = promisify(exec);
-const worker = new Worker('ffmpeg-conversion', async (job) => {
+const worker = new Worker('video-queue', async (job) => {
     const { inputPath, outputFolder, resolutions, fileKey } = job.data;
+    await fs.promises.mkdir(outputFolder, { recursive: true });
     const cmd = `
         ffmpeg -i ${inputPath} \
         -filter_complex "
