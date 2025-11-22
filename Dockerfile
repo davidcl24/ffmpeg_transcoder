@@ -26,8 +26,7 @@ FROM node:22.17.0-alpine AS runtime
 WORKDIR /app
 
 # Instalar FFmpeg 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ffmpeg \
+RUN apk update && apk add --no-cache ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiar solo dependencias necesarias
